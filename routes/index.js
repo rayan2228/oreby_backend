@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const apiRoutes = require("./api");
-const baseApiURL = "/api/v1";
+const baseApiURL = process.env.BASE_URL;
 
 router.use(baseApiURL, apiRoutes);
 
