@@ -3,6 +3,8 @@ const emailValidation = require("../../../helpers/emailValidation");
 const passwordValidation = require("../../../helpers/passwordValidation");
 const userModal = require("../../../modal/userModal");
 const bcrypt = require("bcrypt");
+const sendMail = require("../../../helpers/sendMail");
+const emailVerifyTemplate = require("../../../template/emailVerifyTemplate");
 const router = express.Router();
 
 router.post("/register", async (req, res) => {
@@ -43,6 +45,7 @@ router.post("/register", async (req, res) => {
         password: hash,
       });
       await userData.save();
+      sendMail(email, 12345, emailVerifyTemplate);
     });
     res.send("ok");
   }
