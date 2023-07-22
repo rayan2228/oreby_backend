@@ -51,9 +51,23 @@ let registerController = async (req, res) => {
         { $set: { emailOTP: randomOTP } },
         { new: true }
       );
+      setInterval(async function () {
+        let deleteOTP = await userModal.findOneAndUpdate(
+          { email },
+          { $unset: { emailOTP: "" } },
+          { new: true }
+        );
+      }, 500000);
       sendMail(email, setEmailOTP.emailOTP, emailVerifyTemplate);
     });
-    res.send("ok");
+    res.json({
+      iserror: false,
+      message: "register successfully,please verify your email",
+      data: {
+        fullName: fullName,
+        email: email,
+      },
+    });
   }
 };
 
