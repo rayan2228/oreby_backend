@@ -10,16 +10,20 @@ const userModal = new mongoose.Schema({
     unique: true,
     require: true,
   },
-  avatar: {
-    type: String,
-  },
   password: {
     type: String,
     require: true,
   },
+  emailOTP: {
+    type: String,
+  },
   emailVerified: {
     type: Boolean,
     default: false,
+  },
+  avatar: {
+    type: String,
+    default: "../images/avatar.jpeg",
   },
   merchant: {
     type: Boolean,
@@ -32,9 +36,11 @@ const userModal = new mongoose.Schema({
   },
   facebookId: {
     type: String,
+    default: null,
   },
   linkedInId: {
     type: String,
+    default: null,
   },
   createdAt: {
     type: Date,
