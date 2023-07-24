@@ -51,12 +51,16 @@ let registerController = async (req, res) => {
         { $set: { emailOTP: randomOTP } },
         { new: true }
       );
-      setInterval(async function () {
-        let deleteOTP = await userModal.findOneAndUpdate(
+      let deleteOTP = setInterval(async function () {
+        await userModal.findOneAndUpdate(
           { email },
-          { $unset: { emailOTP: "" } },
+          { $set: { emailOTP: "" } },
           { new: true }
         );
+        let deleteInterval = await userModal.find({ email: email });
+        if (deleteInterval[0].emailOTP === "") {
+          clearInterval(deleteOTP);
+        }
       }, 500000);
       sendMail(email, setEmailOTP.emailOTP, emailVerifyTemplate);
     });
