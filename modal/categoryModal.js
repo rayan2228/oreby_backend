@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
-
-const categoryModal = new mongoose.Schema({
+let Schema = mongoose.Schema
+const categoryModal = new Schema({
   name: {
     type: String,
     unique: true,
     require: true,
   },
   slug: {
-    type: string,
+    type: String,
   },
   description: {
     type: String,
@@ -15,7 +15,7 @@ const categoryModal = new mongoose.Schema({
   },
   image: {
     type: String,
-    default: "",
+    default: null,
   },
   isActive: {
     type: Boolean,
@@ -28,7 +28,7 @@ const categoryModal = new mongoose.Schema({
   },
   subCategory: [
     {
-      type: Schema.type.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "subCategory",
     },
   ],
