@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-let Schema = mongoose.Schema
+let Schema = mongoose.Schema;
 const categoryModal = new Schema({
   name: {
     type: String,
@@ -26,7 +26,7 @@ const categoryModal = new Schema({
     default: "processing",
     enum: ["processing", "approved", "rejected"],
   },
-  subCategory: [
+  subCategoryId: [
     {
       type: Schema.Types.ObjectId,
       ref: "subCategory",
@@ -38,6 +38,11 @@ const categoryModal = new Schema({
   },
   updatedAt: {
     type: Date,
+    default: null,
+  },
+  deletedAt: {
+    type: Date,
+    default: null,
   },
 });
 
