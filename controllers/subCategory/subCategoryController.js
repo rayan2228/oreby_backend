@@ -1,7 +1,7 @@
 const subCategoryModal = require("../../modal/subCategoryModal");
 
 const createSubCategory = async (req, res) => {
-  const { name, description, slug } = req.body;
+  const { name, description, slug, categoryId } = req.body;
   const errors = {
     iserror: true,
     errorType: "validation error",
@@ -15,6 +15,9 @@ const createSubCategory = async (req, res) => {
   if (!name) {
     errors.errors.name = "subCategory name is required";
     res.send(errors);
+  } else if (!categoryId) {
+    errors.errors.parentCategory = "parent category is required";
+    res.send(errors);
   } else {
     let duplicateSubCategory = await subCategoryModal.find({ name });
     if (duplicateSubCategory.length > 0) {
@@ -27,22 +30,26 @@ const createSubCategory = async (req, res) => {
           name,
           description,
           slug: genarateSlug,
+          categoryId,
         });
         await subCategoryData.save();
-        data.data.name = name;
-        data.data.slug = slug;
-        data.data.description = description;
+        const createdSubCategory = await subCategoryModal.find({
+          _id: subCategoryData._id,
+        });
+        data.data = createdSubCategory;
         res.send(data);
       } else {
         const subCategoryData = new subCategoryModal({
           name,
           description,
           slug,
+          categoryId,
+        });
+        const createdSubCategory = await subCategoryModal.find({
+          _id: subCategoryData._id,
         });
         await subCategoryData.save();
-        data.data.name = name;
-        data.data.slug = slug;
-        data.data.description = description;
+        data.data = createdSubCategory;
         res.send(data);
       }
     }
