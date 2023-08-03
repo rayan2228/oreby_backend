@@ -4,6 +4,6 @@ const {
 } = require("../../../controllers/subCategory/subCategoryController");
 const router = express.Router();
 
-router.use("/create", createSubCategory);
+router.post("/create", createSubCategory);
 
 module.exports = router
