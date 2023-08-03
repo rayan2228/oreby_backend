@@ -7,7 +7,7 @@ const subCategoryModal = new Schema({
     require: true,
   },
   slug: {
-    type: string,
+    type: String,
   },
   description: {
     type: String,
@@ -28,7 +28,7 @@ const subCategoryModal = new Schema({
   },
   categoryId: [
     {
-      type: Schema.type.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "category",
     },
   ],
