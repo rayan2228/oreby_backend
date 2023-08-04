@@ -1,5 +1,5 @@
 const subCategoryModal = require("../../modal/subCategoryModal");
-
+const categoryModal = require("../../modal/categoryModal");
 const createSubCategory = async (req, res) => {
   const { name, description, slug, categoryId } = req.body;
   const errors = {
@@ -36,6 +36,13 @@ const createSubCategory = async (req, res) => {
         const createdSubCategory = await subCategoryModal.find({
           _id: subCategoryData._id,
         });
+        await categoryModal.findOneAndUpdate(
+          { _id: subCategoryData.categoryId },
+          { $push: { subCategoryId: subCategoryData._id } },
+          {
+            new: true,
+          }
+        );
         data.data = createdSubCategory;
         res.send(data);
       } else {
@@ -49,6 +56,13 @@ const createSubCategory = async (req, res) => {
           _id: subCategoryData._id,
         });
         await subCategoryData.save();
+        await categoryModal.findOneAndUpdate(
+          { _id: subCategoryData.categoryId },
+          { $push: { subCategoryId: subCategoryData._id } },
+          {
+            new: true,
+          }
+        );
         data.data = createdSubCategory;
         res.send(data);
       }

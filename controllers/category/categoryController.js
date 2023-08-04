@@ -29,9 +29,8 @@ const createCategory = async (req, res) => {
           slug: genarateSlug,
         });
         await categoryData.save();
-        data.data.name = name;
-        data.data.slug = slug;
-        data.data.description = description;
+        const createdCategory = await categoryModal.find({ name });
+        data.data = createdCategory;
         res.send(data);
       } else {
         const categoryData = new categoryModal({
@@ -40,9 +39,8 @@ const createCategory = async (req, res) => {
           slug,
         });
         await categoryData.save();
-        data.data.name = name;
-        data.data.slug = slug;
-        data.data.description = description;
+        const createdCategory = await categoryModal.find({ name });
+        data.data = createdCategory;
         res.send(data);
       }
     }
@@ -55,7 +53,7 @@ const getAllCategory = async (req, res) => {
     message: "all categories",
     data: {},
   };
-  const allCategory = await categoryModal.find({});
+  const allCategory = await categoryModal.find({}).populate("subCategoryId");
   if (allCategory.length > 0) {
     data.data.allCategory = allCategory;
     res.send(data);
@@ -72,7 +70,8 @@ const getCategoryByName = async (req, res) => {
     message: `get ${name} category`,
     data: {},
   };
-  const category = await categoryModal.find({ name });
+  const category = await categoryModal.find({ name }).populate("subCategoryId");
+  console.log(category);
   if (category.length > 0) {
     data.data.category = category;
     res.send(data);
