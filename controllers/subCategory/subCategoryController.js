@@ -69,5 +69,39 @@ const createSubCategory = async (req, res) => {
     }
   }
 };
-
-module.exports = { createSubCategory };
+const getAllSubCategory = async (req, res) => {
+  let data = {
+    iserror: false,
+    message: "all subCategories",
+    data: {},
+  };
+  const allSubCategory = await subCategoryModal.find({}).populate("categoryId");
+  if (allSubCategory.length > 0) {
+    data.data.allSubCategory = allSubCategory;
+    res.send(data);
+  } else {
+    Date.message = "no categories in database";
+    data.data.allSubCategory = allSubCategory;
+    res.send(data);
+  }
+};
+const getSubCategoryByName = async (req, res) => {
+  let { name } = req.params;
+  let data = {
+    iserror: false,
+    message: `get ${name} subCategory`,
+    data: {},
+  };
+  const subCategory = await subCategoryModal
+    .find({ name })
+    .populate("subCategoryId");
+  if (subCategory.length > 0) {
+    data.data.subCategory = subCategory;
+    res.send(data);
+  } else {
+    data.message = "subCategory not found";
+    data.data.category = category;
+    res.send(data);
+  }
+};
+module.exports = { createSubCategory, getAllSubCategory, getSubCategoryByName };
