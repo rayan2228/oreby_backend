@@ -108,24 +108,25 @@ const categorySoftDelete = async (req, res) => {
   }
 };
 const categoryAllSoftDelete = async (req, res) => {
-  let { name } = req.params;
+  let { name } = req.body;
   let data = {
     iserror: false,
-    message: ` ${name} category is in trash`,
+    message: ` selected category is in trash`,
     data: {},
   };
-  const category = await categoryModal.findOneAndUpdate(
+  const getCategories = await categoryModal.find({ name });
+  getCategories.map(async (category) => {
+    await subCategoryModal.findOneAndUpdate(
+      { categoryId: category._id },
+      { $set: { deletedAt: new Date() } }
+    );
+  });
+  const category = await categoryModal.updateMany(
     { name },
     { $set: { deletedAt: new Date() } }
   );
-  if (category) {
-    data.data.category = category;
-    res.send(data);
-  } else {
-    data.message = "category not found";
-    data.data.category = category;
-    res.send(data);
-  }
+  data.data.category = category;
+  res.send(data);
 };
 
 module.exports = {
