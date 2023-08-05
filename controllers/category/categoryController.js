@@ -130,6 +130,40 @@ const categoryAllSoftDelete = async (req, res) => {
     res.send(data);
   }
 };
+const getAllCategoryWithTrash = async (req, res) => {
+  let data = {
+    iserror: false,
+    message: "all categories with trash",
+    data: {},
+  };
+  const allCategory = await categoryModal.find({}).populate("subCategoryId");
+  if (allCategory.length > 0) {
+    data.data.allCategory = allCategory;
+    res.send(data);
+  } else {
+    Date.message = "no categories in database";
+    data.data.allCategory = allCategory;
+    res.send(data);
+  }
+};
+const getAllCategoryOnlyTrash = async (req, res) => {
+  let data = {
+    iserror: false,
+    message: "all categories with trash",
+    data: {},
+  };
+  const allCategory = await categoryModal
+    .find({ deletedAt: { $ne: null } })
+    .populate("subCategoryId");
+  if (allCategory.length > 0) {
+    data.data.allCategory = allCategory;
+    res.send(data);
+  } else {
+    Date.message = "no categories in database";
+    data.data.allCategory = allCategory;
+    res.send(data);
+  }
+};
 
 module.exports = {
   createCategory,
@@ -137,4 +171,6 @@ module.exports = {
   getCategoryByName,
   categorySoftDelete,
   categoryAllSoftDelete,
+  getAllCategoryWithTrash,
+  getAllCategoryOnlyTrash,
 };
