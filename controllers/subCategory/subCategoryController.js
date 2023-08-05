@@ -52,10 +52,10 @@ const createSubCategory = async (req, res) => {
           slug,
           categoryId,
         });
+        await subCategoryData.save();
         const createdSubCategory = await subCategoryModal.find({
           _id: subCategoryData._id,
         });
-        await subCategoryData.save();
         await categoryModal.findOneAndUpdate(
           { _id: subCategoryData.categoryId },
           { $push: { subCategoryId: subCategoryData._id } },
@@ -75,7 +75,9 @@ const getAllSubCategory = async (req, res) => {
     message: "all subCategories",
     data: {},
   };
-  const allSubCategory = await subCategoryModal.find({}).populate("categoryId");
+  const allSubCategory = await subCategoryModal
+    .find({ deletedAt: { $eq: null } })
+    .populate("categoryId");
   if (allSubCategory.length > 0) {
     data.data.allSubCategory = allSubCategory;
     res.send(data);
