@@ -106,4 +106,58 @@ const getSubCategoryByName = async (req, res) => {
     res.send(data);
   }
 };
-module.exports = { createSubCategory, getAllSubCategory, getSubCategoryByName };
+const subCategorySoftDelete = async (req, res) => {
+  let { name } = req.params;
+  let data = {
+    iserror: false,
+    message: ` ${name} subCategory is in trash`,
+    data: {},
+  };
+  const subCategory = await subCategoryModal
+    .findOneAndUpdate({ name }, { $set: { deletedAt: new Date() } })
+    .populate("categoryId");
+  if (subCategory) {
+    data.data.subCategory = subCategory;
+    res.send(data);
+  } else {
+    data.message = "subCategory not found";
+    data.data.subCategory = subCategory;
+    res.send(data);
+  }
+};
+const subCategoryAllSoftDelete = async (req, res) => {
+  let { name } = req.body;
+  const errors = {
+    iserror: true,
+    errorType: "validation error",
+    errors: {},
+  };
+  let data = {
+    iserror: false,
+    message: ` selected SubCategory is in trash`,
+    data: {},
+  };
+  if (name) {
+    if (Array.isArray(name)) {
+      const subCategory = await subCategoryModal.updateMany(
+        { name },
+        { $set: { deletedAt: new Date() } }
+      );
+      data.data.subCategory = subCategory;
+      res.send(data);
+    } else {
+      errors.errors.name = "name must be in array format";
+      res.send(errors);
+    }
+  } else {
+    errors.errors.name = "must have at least one subCategory";
+    res.send(errors);
+  }
+};
+module.exports = {
+  createSubCategory,
+  getAllSubCategory,
+  getSubCategoryByName,
+  subCategorySoftDelete,
+  subCategoryAllSoftDelete,
+};
