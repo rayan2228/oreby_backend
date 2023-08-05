@@ -1,4 +1,5 @@
 const categoryModal = require("../../modal/categoryModal");
+const subCategoryModal = require("../../modal/subCategoryModal");
 
 const createCategory = async (req, res) => {
   const { name, description, slug } = req.body;
@@ -90,6 +91,29 @@ const categorySoftDelete = async (req, res) => {
     message: ` ${name} category is in trash`,
     data: {},
   };
+  const category = await categoryModal
+    .findOneAndUpdate({ name }, { $set: { deletedAt: new Date() } })
+    .populate("subCategoryId");
+  await subCategoryModal.findOneAndUpdate(
+    { categoryId: category._id },
+    { $set: { deletedAt: new Date() } }
+  );
+  if (category) {
+    data.data.category = category;
+    res.send(data);
+  } else {
+    data.message = "category not found";
+    data.data.category = category;
+    res.send(data);
+  }
+};
+const categoryAllSoftDelete = async (req, res) => {
+  let { name } = req.params;
+  let data = {
+    iserror: false,
+    message: ` ${name} category is in trash`,
+    data: {},
+  };
   const category = await categoryModal.findOneAndUpdate(
     { name },
     { $set: { deletedAt: new Date() } }
@@ -109,4 +133,5 @@ module.exports = {
   getAllCategory,
   getCategoryByName,
   categorySoftDelete,
+  categoryAllSoftDelete,
 };
