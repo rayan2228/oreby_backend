@@ -211,6 +211,10 @@ const updateCategoryStatus = async (req, res) => {
             }
           )
           .populate("subCategoryId");
+        await subCategoryModal.updateMany(
+          { categoryId: category._id },
+          { $set: { status, isActive: false } }
+        );
         data.data.category = category;
         res.send(data);
       } else {
