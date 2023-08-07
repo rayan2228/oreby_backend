@@ -165,6 +165,68 @@ const getAllCategoryOnlyTrash = async (req, res) => {
   }
 };
 
+const updateCategoryStatus = async (req, res) => {
+  let { name, status } = req.body;
+  const errors = {
+    iserror: true,
+    errorType: "validation error",
+    errors: {},
+  };
+  let data = {
+    iserror: false,
+    message: "category status updated successfully",
+    data: {},
+  };
+  if (name) {
+    if (status) {
+      if (status == "approved") {
+        const category = await categoryModal
+          .findOneAndUpdate(
+            { name },
+            {
+              $set: {
+                status,
+                isActive: true,
+              },
+            },
+            {
+              new: true,
+            }
+          )
+          .populate("subCategoryId");
+        data.data.category = category;
+        res.send(data);
+      } else if (status == "rejected" || status == "processing") {
+        const category = await categoryModal
+          .findOneAndUpdate(
+            { name },
+            {
+              $set: {
+                status,
+                isActive: false,
+              },
+            },
+            {
+              new: true,
+            }
+          )
+          .populate("subCategoryId");
+        data.data.category = category;
+        res.send(data);
+      } else {
+        errors.errors.status =
+          "status value should be approved,processing or rejected";
+        res.send(errors);
+      }
+    } else {
+      errors.errors.status = "status is required";
+      res.send(errors);
+    }
+  } else {
+    errors.errors.status = "name is required";
+    res.send(errors);
+  }
+};
 module.exports = {
   createCategory,
   getAllCategory,
@@ -173,4 +235,5 @@ module.exports = {
   categoryAllSoftDelete,
   getAllCategoryWithTrash,
   getAllCategoryOnlyTrash,
+  updateCategoryStatus,
 };
