@@ -154,10 +154,46 @@ const subCategoryAllSoftDelete = async (req, res) => {
     res.send(errors);
   }
 };
+const getAllSubCategoryWithTrash = async (req, res) => {
+  let data = {
+    iserror: false,
+    message: "all subCategories with trash",
+    data: {},
+  };
+  const allSubCategory = await subCategoryModal.find({}).populate("categoryId");
+  if (allSubCategory.length > 0) {
+    data.data.allSubCategory = allSubCategory;
+    res.send(data);
+  } else {
+    Date.message = "no subCategories in database";
+    data.data.allSubCategory = allSubCategory;
+    res.send(data);
+  }
+};
+const getAllSubCategoryOnlyTrash = async (req, res) => {
+  let data = {
+    iserror: false,
+    message: "all categories with trash",
+    data: {},
+  };
+  const allSubCategory = await subCategoryModal
+    .find({ deletedAt: { $ne: null } })
+    .populate("categoryId");
+  if (allSubCategory.length > 0) {
+    data.data.allSubCategory = allSubCategory;
+    res.send(data);
+  } else {
+    Date.message = "no categories in database";
+    data.data.allSubCategory = allSubCategory;
+    res.send(data);
+  }
+};
 module.exports = {
   createSubCategory,
   getAllSubCategory,
   getSubCategoryByName,
   subCategorySoftDelete,
   subCategoryAllSoftDelete,
+  getAllSubCategoryWithTrash,
+  getAllSubCategoryOnlyTrash,
 };
