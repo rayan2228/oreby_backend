@@ -6,6 +6,7 @@ const {
   subCategoryAllSoftDelete,
   getAllSubCategoryWithTrash,
   getAllSubCategoryOnlyTrash,
+  updateSubCategoryStatus,
 } = require("../../../controllers/subCategory/subCategoryController");
 const router = express.Router();
 
@@ -16,4 +17,5 @@ router.get("/trash/:name", subCategorySoftDelete);
 router.post("/trash/", subCategoryAllSoftDelete);
 router.get("/withtrash/", getAllSubCategoryWithTrash);
 router.get("/onlytrash/", getAllSubCategoryOnlyTrash);
+router.post("/status/", updateSubCategoryStatus);
 module.exports = router;

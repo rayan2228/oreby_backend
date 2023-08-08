@@ -188,6 +188,78 @@ const getAllSubCategoryOnlyTrash = async (req, res) => {
     res.send(data);
   }
 };
+const updateSubCategoryStatus = async (req, res) => {
+  let { name, status } = req.body;
+  const errors = {
+    iserror: true,
+    errorType: "validation error",
+    errors: {},
+  };
+  let data = {
+    iserror: false,
+    message: "subCategory status updated successfully",
+    data: {},
+  };
+  if (name) {
+    if (status) {
+      if (status == "approved") {
+        const getParentCategory = await subCategoryModal.findOne({ name });
+        const checkParentCategoryStatus = await categoryModal.find({
+          _id: getParentCategory.categoryId[0],
+        });
+        if (checkParentCategoryStatus.status === "approved") {
+          const subCategory = await subCategoryModal
+            .findOneAndUpdate(
+              { name },
+              {
+                $set: {
+                  status,
+                  isActive: true,
+                },
+              },
+              {
+                new: true,
+              }
+            )
+            .populate("categoryId");
+          data.data.subCategory = subCategory;
+          res.send(data);
+        }else{
+              errors.errors.status =
+                "parent category status should be approved";
+              res.send(errors);
+        }
+      } else if (status == "rejected" || status == "processing") {
+        const subCategory = await subCategoryModal
+          .findOneAndUpdate(
+            { name },
+            {
+              $set: {
+                status,
+                isActive: false,
+              },
+            },
+            {
+              new: true,
+            }
+          )
+          .populate("categoryId");
+        data.data.subCategory = subCategory;
+        res.send(data);
+      } else {
+        errors.errors.status =
+          "status value should be approved,processing or rejected";
+        res.send(errors);
+      }
+    } else {
+      errors.errors.status = "status is required";
+      res.send(errors);
+    }
+  } else {
+    errors.errors.status = "name is required";
+    res.send(errors);
+  }
+};
 module.exports = {
   createSubCategory,
   getAllSubCategory,
@@ -196,4 +268,5 @@ module.exports = {
   subCategoryAllSoftDelete,
   getAllSubCategoryWithTrash,
   getAllSubCategoryOnlyTrash,
+  updateSubCategoryStatus,
 };
