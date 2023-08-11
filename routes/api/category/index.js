@@ -8,6 +8,8 @@ const {
   getAllCategoryWithTrash,
   getAllCategoryOnlyTrash,
   updateCategoryStatus,
+  isActiveCategory,
+  activeCategories,
 } = require("../../../controllers/category/categoryController");
 const router = express.Router();
 
@@ -19,4 +21,6 @@ router.post("/trash/", categoryAllSoftDelete);
 router.get("/withtrash", getAllCategoryWithTrash);
 router.get("/onlytrash", getAllCategoryOnlyTrash);
 router.post("/status", updateCategoryStatus);
+router.post("/isactive", isActiveCategory);
+router.get("/activecategories", activeCategories);
 module.exports = router;
