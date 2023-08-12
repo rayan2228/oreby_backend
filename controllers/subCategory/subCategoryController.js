@@ -264,6 +264,82 @@ const updateSubCategoryStatus = async (req, res) => {
     res.send(errors);
   }
 };
+const isActiveSubCategory = async (req, res) => {
+  const { name, isActive } = req.body;
+  const errors = {
+    iserror: true,
+    errorType: "validation error",
+    errors: {},
+  };
+  let data = {
+    iserror: false,
+    message: "category is active",
+    data: {},
+  };
+  if (name) {
+    if (isActive) {
+      if (isActive) {
+        const checkCategoryStatus = await categoryModal.findOne({ name });
+        if (checkCategoryStatus.status === "approved") {
+          await categoryModal.findOneAndUpdate(
+            { name },
+            {
+              $set: { isActive },
+            },
+            { new: true }
+          );
+          res.send(data);
+        } else {
+          errors.errors.message = "category status must be approved";
+          res.send(errors);
+        }
+      } else if (isActive === false) {
+        await categoryModal.findOneAndUpdate(
+          { name },
+          {
+            $set: { isActive },
+          },
+          { new: true }
+        );
+        data.message = "category is inactive";
+        res.send(data);
+      } else {
+        errors.errors.message = "value should be active or inactive";
+        res.send(errors);
+      }
+    } else {
+      errors.errors.message = "isActive is required";
+      res.send(errors);
+    }
+  } else {
+    errors.errors.message = "category name is required";
+    res.send(errors);
+  }
+};
+const activeSubCategories = async (req, res) => {
+  let data = {
+    iserror: false,
+    message: "active subCategories",
+    data: {},
+  };
+  const activeSubCategories = await subCategoryModal.find({
+    isActive: { $eq: true },
+  });
+  data.data.activeSubCategories = activeSubCategories;
+  res.send(data);
+};
+const inactiveSubCategories = async (req, res) => {
+  let data = {
+    iserror: false,
+    message: "inactive subCategories",
+    data: {},
+  };
+  const inactiveSubCategories = await subCategoryModal.find({
+    isActive: { $eq: false },
+  });
+  data.data.inactiveSubCategories = inactiveSubCategories;
+  res.send(data);
+};
 module.exports = {
   createSubCategory,
   getAllSubCategory,
@@ -273,4 +349,6 @@ module.exports = {
   getAllSubCategoryWithTrash,
   getAllSubCategoryOnlyTrash,
   updateSubCategoryStatus,
+  activeSubCategories,
+  inactiveSubCategories,
 };
