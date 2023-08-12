@@ -254,7 +254,6 @@ const isActiveCategory = async (req, res) => {
     if (isActive !== "") {
       if (isActive) {
         const checkCategoryStatus = await categoryModal.findOne({ name });
-        res.send(checkCategoryStatus);
         if (checkCategoryStatus.status === "approved") {
           await categoryModal.findOneAndUpdate(
             { name },
@@ -263,7 +262,6 @@ const isActiveCategory = async (req, res) => {
             },
             { new: true }
           );
-
           res.send(data);
         } else {
           errors.errors.message = "category status must be approved";

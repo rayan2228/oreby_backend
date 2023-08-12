@@ -277,18 +277,26 @@ const isActiveSubCategory = async (req, res) => {
     data: {},
   };
   if (name) {
-    if (isActive) {
+    if (isActive !== "") {
       if (isActive) {
         const checkSubCategoryStatus = await subCategoryModal.findOne({ name });
         if (checkSubCategoryStatus.status === "approved") {
-          await subCategoryModal.findOneAndUpdate(
-            { name },
-            {
-              $set: { isActive },
-            },
-            { new: true }
-          );
-          res.send(data);
+          const checkParentCategory = await categoryModal.findOne({
+            _id: checkSubCategoryStatus.categoryId,
+          });
+          if (checkParentCategory.isActive) {
+            await subCategoryModal.findOneAndUpdate(
+              { name },
+              {
+                $set: { isActive },
+              },
+              { new: true }
+            );
+            res.send(data);
+          } else {
+            errors.errors.message = "parent category is inactive";
+            res.send(errors);
+          }
         } else {
           errors.errors.message = "subCategory status must be approved";
           res.send(errors);
