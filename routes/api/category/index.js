@@ -10,6 +10,7 @@ const {
   updateCategoryStatus,
   isActiveCategory,
   activeCategories,
+  inactiveCategories,
 } = require("../../../controllers/category/categoryController");
 const router = express.Router();
 
@@ -23,4 +24,5 @@ router.get("/onlytrash", getAllCategoryOnlyTrash);
 router.post("/status", updateCategoryStatus);
 router.post("/isactive", isActiveCategory);
 router.get("/activecategories", activeCategories);
+router.get("/inactivecategories", inactiveCategories);
 module.exports = router;

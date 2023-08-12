@@ -302,6 +302,18 @@ const activeCategories = async (req, res) => {
   data.data.activeCategories = activeCategories;
   res.send(data);
 };
+const inactiveCategories = async (req, res) => {
+  let data = {
+    iserror: false,
+    message: "inactive categories",
+    data: {},
+  };
+  const inactiveCategories = await categoryModal.find({
+    isActive: { $eq: false },
+  });
+  data.data.inactiveCategories = inactiveCategories;
+  res.send(data);
+};
 module.exports = {
   createCategory,
   getAllCategory,
@@ -313,4 +325,5 @@ module.exports = {
   updateCategoryStatus,
   isActiveCategory,
   activeCategories,
+  inactiveCategories,
 };
