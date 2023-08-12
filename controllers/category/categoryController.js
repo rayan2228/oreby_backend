@@ -247,13 +247,14 @@ const isActiveCategory = async (req, res) => {
   };
   let data = {
     iserror: false,
-    message: "category is active",
+    message: "category is active ",
     data: {},
   };
   if (name) {
-    if (isActive) {
+    if (isActive !== "") {
       if (isActive) {
         const checkCategoryStatus = await categoryModal.findOne({ name });
+        res.send(checkCategoryStatus);
         if (checkCategoryStatus.status === "approved") {
           await categoryModal.findOneAndUpdate(
             { name },
@@ -262,17 +263,26 @@ const isActiveCategory = async (req, res) => {
             },
             { new: true }
           );
+
           res.send(data);
         } else {
           errors.errors.message = "category status must be approved";
           res.send(errors);
         }
       } else if (isActive === false) {
+        const checkCategoryStatus = await categoryModal.findOne({
+          name,
+        });
         await categoryModal.findOneAndUpdate(
           { name },
           {
             $set: { isActive },
           },
+          { new: true }
+        );
+        await subCategoryModal.findOneAndUpdate(
+          { categoryId: checkCategoryStatus._id },
+          { $set: { isActive: false } },
           { new: true }
         );
         data.message = "category is inactive";
@@ -296,9 +306,11 @@ const activeCategories = async (req, res) => {
     message: "active categories",
     data: {},
   };
-  const activeCategories = await categoryModal.find({
-    isActive: { $eq: true },
-  });
+  const activeCategories = await categoryModal
+    .find({
+      isActive: { $eq: true },
+    })
+    .populate("subCategoryId");
   data.data.activeCategories = activeCategories;
   res.send(data);
 };
@@ -308,9 +320,11 @@ const inactiveCategories = async (req, res) => {
     message: "inactive categories",
     data: {},
   };
-  const inactiveCategories = await categoryModal.find({
-    isActive: { $eq: false },
-  });
+  const inactiveCategories = await categoryModal
+    .find({
+      isActive: { $eq: false },
+    })
+    .populate("subCategoryId");
   data.data.inactiveCategories = inactiveCategories;
   res.send(data);
 };

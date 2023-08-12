@@ -9,6 +9,7 @@ const {
   updateSubCategoryStatus,
   activeSubCategories,
   inactiveSubCategories,
+  isActiveSubCategory,
 } = require("../../../controllers/subCategory/subCategoryController");
 const router = express.Router();
 
@@ -20,6 +21,7 @@ router.post("/trash/", subCategoryAllSoftDelete);
 router.get("/withtrash/", getAllSubCategoryWithTrash);
 router.get("/onlytrash/", getAllSubCategoryOnlyTrash);
 router.post("/status/", updateSubCategoryStatus);
+router.post("/isactive/", isActiveSubCategory);
 router.get("/activesubcategories/", activeSubCategories);
 router.get("/inactivesubcategories/", inactiveSubCategories);
 module.exports = router;

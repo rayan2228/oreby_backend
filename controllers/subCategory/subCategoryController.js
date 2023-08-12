@@ -205,8 +205,8 @@ const updateSubCategoryStatus = async (req, res) => {
       const getParentCategory = await subCategoryModal.findOne({ name });
       if (getParentCategory) {
         if (status == "approved") {
-          const checkParentCategoryStatus = await categoryModal.find({
-            _id: getParentCategory.categoryId[0],
+          const checkParentCategoryStatus = await categoryModal.findOne({
+            _id: getParentCategory.categoryId,
           });
           if (checkParentCategoryStatus.status === "approved") {
             const subCategory = await subCategoryModal
@@ -273,15 +273,15 @@ const isActiveSubCategory = async (req, res) => {
   };
   let data = {
     iserror: false,
-    message: "category is active",
+    message: "subCategory is active",
     data: {},
   };
   if (name) {
     if (isActive) {
       if (isActive) {
-        const checkCategoryStatus = await categoryModal.findOne({ name });
-        if (checkCategoryStatus.status === "approved") {
-          await categoryModal.findOneAndUpdate(
+        const checkSubCategoryStatus = await subCategoryModal.findOne({ name });
+        if (checkSubCategoryStatus.status === "approved") {
+          await subCategoryModal.findOneAndUpdate(
             { name },
             {
               $set: { isActive },
@@ -290,7 +290,7 @@ const isActiveSubCategory = async (req, res) => {
           );
           res.send(data);
         } else {
-          errors.errors.message = "category status must be approved";
+          errors.errors.message = "subCategory status must be approved";
           res.send(errors);
         }
       } else if (isActive === false) {
@@ -301,7 +301,7 @@ const isActiveSubCategory = async (req, res) => {
           },
           { new: true }
         );
-        data.message = "category is inactive";
+        data.message = "subCategory is inactive";
         res.send(data);
       } else {
         errors.errors.message = "value should be active or inactive";
@@ -312,7 +312,7 @@ const isActiveSubCategory = async (req, res) => {
       res.send(errors);
     }
   } else {
-    errors.errors.message = "category name is required";
+    errors.errors.message = "subCategory name is required";
     res.send(errors);
   }
 };
@@ -351,4 +351,5 @@ module.exports = {
   updateSubCategoryStatus,
   activeSubCategories,
   inactiveSubCategories,
+  isActiveSubCategory,
 };
