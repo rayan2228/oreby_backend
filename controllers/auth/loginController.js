@@ -11,24 +11,30 @@ const loginController = async (req, res) => {
   if (email && password) {
     let findCredentials = await userModal.find({ email: email });
     if (findCredentials.length > 0) {
-      bcrypt
-        .compare(password, findCredentials[0].password)
-        .then(function (result) {
-          if (result) {
-            res.json({
-              iserror: false,
-              message: "login successfully",
-              data: {
-                fullName: findCredentials[0].fullName,
-                email: email,
-              },
-            });
-          } else {
-            errors.errors.authentication =
-              "authentication credentials do not match";
-            res.send(errors);
-          }
-        });
+      if (findCredentials.userBan) {
+        errors.errors.authentication =
+          "user banned , please contact with admin";
+        res.send(errors);
+      } else {
+        bcrypt
+          .compare(password, findCredentials[0].password)
+          .then(function (result) {
+            if (result) {
+              res.json({
+                iserror: false,
+                message: "login successfully",
+                data: {
+                  fullName: findCredentials[0].fullName,
+                  email: email,
+                },
+              });
+            } else {
+              errors.errors.authentication =
+                "authentication credentials do not match";
+              res.send(errors);
+            }
+          });
+      }
     }
   } else {
     errors.errors.authentication = "authentication credentials do not match";

@@ -8,23 +8,28 @@ const verifyOTP = async (req, res) => {
   };
   let { email, otp } = req.body;
   if (email && otp) {
-    let matchOTP = await userModal.find({ email });
-    if (matchOTP[0].emailOTP === otp) {
-      await userModal.findOneAndUpdate(
-        { email },
-        { $set: { emailOTP: "", emailVerified: true } },
-        { new: true }
-      );
-      res.json({
-        iserror: false,
-        message: "email verified successfully",
-        data: {
-          fullName: matchOTP[0].fullName,
-          email: email,
-        },
-      });
+    let matchOTP = await userModal.findOne({ email });
+    if (matchOTP) {
+      if (matchOTP.emailOTP === otp) {
+        await userModal.findOneAndUpdate(
+          { email },
+          { $set: { emailOTP: "", emailVerified: true } },
+          { new: true }
+        );
+        res.json({
+          iserror: false,
+          message: "email verified successfully",
+          data: {
+            fullName: matchOTP[0].fullName,
+            email: email,
+          },
+        });
+      } else {
+        errors.errors.verification = "otp not matched,try again";
+        res.send(errors);
+      }
     } else {
-      errors.errors.verification = "otp not matched,try again";
+      errors.errors.verification = "email not found";
       res.send(errors);
     }
   } else {
