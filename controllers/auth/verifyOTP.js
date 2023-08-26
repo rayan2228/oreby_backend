@@ -20,7 +20,7 @@ const verifyOTP = async (req, res) => {
           iserror: false,
           message: "email verified successfully",
           data: {
-            fullName: matchOTP[0].fullName,
+            fullName: matchOTP.fullName,
             email: email,
           },
         });

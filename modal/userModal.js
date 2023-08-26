@@ -34,14 +34,6 @@ const userModal = new mongoose.Schema({
     default: "customer",
     enum: ["admin", "merchant", "customer"],
   },
-  facebookId: {
-    type: String,
-    default: null,
-  },
-  linkedInId: {
-    type: String,
-    default: null,
-  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -50,9 +42,9 @@ const userModal = new mongoose.Schema({
     type: Date,
     default: null,
   },
-  deletedAt: {
-    type: Date,
-    default: null,
+  userBan: {
+    type: Boolean,
+    default: false,
   },
 });
 
