@@ -35,9 +35,12 @@ const loginController = async (req, res) => {
             }
           });
       }
+    } else {
+      errors.errors.authentication = "authentication credentials do not match";
+      res.send(errors);
     }
   } else {
-    errors.errors.authentication = "authentication credentials do not match";
+    errors.errors.authentication = "all fields are required";
     res.send(errors);
   }
 };
