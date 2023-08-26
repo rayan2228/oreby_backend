@@ -9,22 +9,22 @@ const loginController = async (req, res) => {
   };
   let { email, password } = req.body;
   if (email && password) {
-    let findCredentials = await userModal.find({ email: email });
-    if (findCredentials.length > 0) {
+    let findCredentials = await userModal.findOne({ email: email });
+    if (findCredentials) {
       if (findCredentials.userBan) {
         errors.errors.authentication =
           "user banned , please contact with admin";
         res.send(errors);
       } else {
         bcrypt
-          .compare(password, findCredentials[0].password)
+          .compare(password, findCredentials.password)
           .then(function (result) {
             if (result) {
               res.json({
                 iserror: false,
                 message: "login successfully",
                 data: {
-                  fullName: findCredentials[0].fullName,
+                  fullName: findCredentials.fullName,
                   email: email,
                 },
               });
