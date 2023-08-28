@@ -13,7 +13,7 @@ const loginController = async (req, res) => {
     if (findCredentials) {
       if (findCredentials.userBan) {
         errors.errors.authentication =
-          "user banned , please contact with admin";
+          "your account has been banned , please contact with admin";
         res.send(errors);
       } else {
         bcrypt
@@ -30,13 +30,14 @@ const loginController = async (req, res) => {
               });
             } else {
               errors.errors.authentication =
-                "authentication credentials do not match";
+                "authentication credentials do not match 1";
               res.send(errors);
             }
           });
       }
     } else {
-      errors.errors.authentication = "authentication credentials do not match";
+      errors.errors.authentication =
+        "authentication credentials do not match 2";
       res.send(errors);
     }
   } else {
